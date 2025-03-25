@@ -35,9 +35,9 @@ ota:
 - platform: http_request
 
 # This should point to the public location of this yaml file.
-#dashboard_import:
-#  package_import_url: github://DelQueso/template/project-template-esp32.yaml@main
-#  import_full_config: true # or true
+dashboard_import:
+  package_import_url: github://DelQueso/sensor1/sensor1.yaml@main
+  import_full_config: true # or true
 
 
 wifi:

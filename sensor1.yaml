@@ -20,7 +20,7 @@ http_request:
 update:
   - platform: http_request
     name: Firmware Update
-    source: https://github.com/delqueso/sensor1/releases/latest/download/sensor1.manifest.json
+    source: http://github.com/delqueso/sensor1/releases/latest/download/sensor1.manifest.json
 esp32:
   board: esp32dev
   framework:

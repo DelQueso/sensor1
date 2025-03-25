@@ -15,12 +15,13 @@ esphome:
 # Example configuration entry
 http_request:
   verify_ssl: false
-
+  redirect_limit: 10
 # Example configuration entry
 update:
   - platform: http_request
     name: Firmware Update
-    source: http://github.com/delqueso/sensor1/releases/latest/download/sensor1.manifest.json
+    source: https://github.com/delqueso/sensor1/releases/latest/download/sensor1.manifest.json
+    red
 esp32:
   board: esp32dev
   framework:

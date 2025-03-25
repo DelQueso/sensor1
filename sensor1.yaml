@@ -10,12 +10,15 @@ esphome:
   # configuration and updates.
   project:
     name: "delqueso.sensor1"
-    version: "1.0.9"
+    version: "1.0.10"
 
 # Example configuration entry
 http_request:
-  verify_ssl: false
+  timeout: 10s
+  verify_ssl: true
   redirect_limit: 10
+  buffer_size_rx: 2048
+  buffer_size_tx: 2048
 # Example configuration entry
 update:
   - platform: http_request
@@ -24,7 +27,8 @@ update:
 esp32:
   board: esp32dev
   framework:
-    type: arduino
+    type: esp-idf
+    
 
 
 
@@ -33,11 +37,11 @@ api:
 
 ota:
 - platform: http_request
-
+  
 # This should point to the public location of this yaml file.
-dashboard_import:
-  package_import_url: github://DelQueso/sensor1/sensor1.yaml@main
-  import_full_config: true # or true
+# dashboard_import:
+#   package_import_url: github://DelQueso/sensor1/sensor1.yaml@main
+#   import_full_config: false # or true
 
 
 wifi:
@@ -47,6 +51,7 @@ wifi:
     password: '12345678'
 captive_portal:
 logger:
+    level: VERBOSE
 
 # Define GPIO outputs
 output:
@@ -103,31 +108,3 @@ sensor:
   update_interval: 60s    # We control when to read data
 
 # Connection status, door open, alarm handling
-interval:
-- interval: 1s
-  then:
-    if:
-      condition:
-        wifi.connected:
-      then:
-      - if:
-          condition:
-            api.connected:
-          then:
-          - light.turn_on:
-              id: status_led_ok
-              flash_length: 100ms
-          - light.turn_off:
-              id: status_led_nok
-          else:
-          - light.turn_on:
-              id: status_led_nok
-              flash_length: 100ms
-          - light.turn_off:
-              id: status_led_ok
-      else:
-      - light.turn_on:
-          id: status_led_nok
-          flash_length: 500ms
-      - light.turn_off:
-          id: status_led_ok

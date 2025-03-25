@@ -108,3 +108,31 @@ sensor:
   update_interval: 60s    # We control when to read data
 
 # Connection status, door open, alarm handling
+interval:
+- interval: 1s
+  then:
+    if:
+      condition:
+        wifi.connected:
+      then:
+      - if:
+          condition:
+            api.connected:
+          then:
+          - light.turn_on:
+              id: status_led_ok
+              flash_length: 100ms
+          - light.turn_off:
+              id: status_led_nok
+          else:
+          - light.turn_on:
+              id: status_led_nok
+              flash_length: 100ms
+          - light.turn_off:
+              id: status_led_ok
+      else:
+      - light.turn_on:
+          id: status_led_nok
+          flash_length: 500ms
+      - light.turn_off:
+          id: status_led_ok

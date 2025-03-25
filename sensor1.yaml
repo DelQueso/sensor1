@@ -1,29 +1,133 @@
 esphome:
-  name: project-template
-  friendly_name: Project Template
+  name: sensor1
+  friendly_name: My Sensor 1
   # Automatically add the mac address to the name
   # so you can use a single firmware for all devices
-  name_add_mac_suffix: true
+  name_add_mac_suffix: false
 
+
+  # This will allow for (future) project identification,
+  # configuration and updates.
+  project:
+    name: delqueso.sensor1
+    version: '1.0.0'
+
+# Example configuration entry
+http_request:
+  verify_ssl: false
+
+# Example configuration entry
+update:
+  - platform: http_request
+    name: Firmware Update
+    source: https://github.com/delqueso/sensor1/releases/latest/download/sensor1.manifest.json
 esp32:
   board: esp32dev
   framework:
-    type: esp-idf
+    type: arduino
 
-# To be able to get logs from the device via serial and api.
-logger:
 
-# API is a requirement of the dashboard import.
+
+# Enable Home Assistant API
 api:
 
-# OTA is required for Over-the-Air updating
 ota:
-  - platform: esphome
+- platform: http_request
+
+# This should point to the public location of this yaml file.
+dashboard_import:
+  package_import_url: github://DelQueso/template/project-template-esp32.yaml@main
+  import_full_config: true # or true
+
 
 wifi:
-  # Set up a wifi access point using the device name above
-  ap:
 
-# In combination with the `ap` this allows the user
-# to provision wifi credentials to the device.
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    password: '12345678'
 captive_portal:
+logger:
+
+# Define GPIO outputs
+output:
+- platform: gpio
+  pin: GPIO18
+  id: red_led_bottom
+
+- platform: gpio
+  pin: GPIO22
+  id: green_led_top
+
+- platform: gpio
+  pin: GPIO19
+  id: blue_led_bottom
+
+- platform: gpio
+  pin: GPIO21
+  id: red_led_top
+
+# Define leds
+light:
+- platform: binary
+  id: red_led_error
+  output: red_led_bottom
+  name: Red LED Bottom
+
+- platform: binary
+  output: blue_led_bottom
+  name: Blue LED Bottom
+
+- platform: binary
+  id: status_led_nok
+  output: red_led_top
+  name: Red LED Top
+- platform: binary
+  id: status_led_ok
+  internal: true
+  output: green_led_top
+
+i2c:
+  sda: GPIO14
+  scl: GPIO13
+  scan: true
+  id: bus_a
+sensor:
+- platform: sht4x
+  id: temperature_sensor    # Set id for the sensor
+  temperature:
+    name: Temperature
+    force_update: true
+  humidity:
+    name: Relative Humidity
+    force_update: true
+  update_interval: 60s    # We control when to read data
+
+# Connection status, door open, alarm handling
+interval:
+- interval: 1s
+  then:
+    if:
+      condition:
+        wifi.connected:
+      then:
+      - if:
+          condition:
+            api.connected:
+          then:
+          - light.turn_on:
+              id: status_led_ok
+              flash_length: 100ms
+          - light.turn_off:
+              id: status_led_nok
+          else:
+          - light.turn_on:
+              id: status_led_nok
+              flash_length: 100ms
+          - light.turn_off:
+              id: status_led_ok
+      else:
+      - light.turn_on:
+          id: status_led_nok
+          flash_length: 500ms
+      - light.turn_off:
+          id: status_led_ok

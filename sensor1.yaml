@@ -21,7 +21,6 @@ update:
   - platform: http_request
     name: Firmware Update
     source: https://github.com/delqueso/sensor1/releases/latest/download/sensor1.manifest.json
-    red
 esp32:
   board: esp32dev
   framework:

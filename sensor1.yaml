@@ -1,5 +1,5 @@
 esphome:
-  name: sensor1
+  name: sensor1-${mac_suffix}
   friendly_name: My Sensor 1
   name_add_mac_suffix: true
 

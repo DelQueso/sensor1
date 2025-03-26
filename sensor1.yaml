@@ -1,25 +1,18 @@
 esphome:
   name: sensor1
   friendly_name: My Sensor 1
-  # Automatically add the mac address to the name
-  # so you can use a single firmware for all devices
   name_add_mac_suffix: true
 
 
-  # This will allow for (future) project identification,
-  # configuration and updates.
+
   project:
     name: "delqueso.sensor1"
-    #version: "1.1.20"
 
 # Example configuration entry
 http_request:
-##  timeout: 20s
   verify_ssl: true
-##  redirect_limit: 10
   buffer_size_rx: 2048
   buffer_size_tx: 2048
-# Example configuration entry
 update:
   - platform: http_request
     name: Firmware Update
@@ -32,33 +25,11 @@ esp32:
 
 
 
-# Enable Home Assistant API
+
 api:
 
 ota:
 - platform: http_request
-#  on_begin:
-#    then:
-#      - logger.log: "*************** begin ota ******************************"
-#  on_progress:
-#    then:
-#      - logger.log: 
-#          format: "OTA progress %0.1f%%"
-#          args: ["x"]
-#  on_end:
-#    then:
-#      - logger.log: "*************** end ota ******************************"
-#  on_error:
-#    then:
-#      - logger.log: 
-#          format: "OTA update error %d"
-#          args: ["x"]
-  
-# This should point to the public location of this yaml file.
-# dashboard_import:
-#   package_import_url: github://DelQueso/sensor1/sensor1.yaml@main
-#   import_full_config: false # or true
-
 
 wifi:
 

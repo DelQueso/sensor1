@@ -1,6 +1,6 @@
 substitutions:
-  name: "sensor1"
-  friendly_name: "My Sensor 1"
+  name: "sensor12"
+  friendly_name: "My Sensor 12"
 esphome:
   name: "${name}"
   friendly_name: "${friendly_name}"

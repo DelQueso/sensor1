@@ -3,7 +3,7 @@ substitutions:
   friendly_name: "My Sensor 1"
 esphome:
   name: "${name}"
-  friendly_name: ${friendly_name}"
+  friendly_name: "${friendly_name}"
   name_add_mac_suffix: true
 
 

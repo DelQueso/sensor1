@@ -10,7 +10,7 @@ esphome:
   # configuration and updates.
   project:
     name: "delqueso.sensor1"
-    version: "1.1.12"
+    version: "1.1.13"
 
 # Example configuration entry
 http_request:

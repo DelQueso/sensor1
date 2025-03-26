@@ -3,14 +3,14 @@ esphome:
   friendly_name: My Sensor 1
   # Automatically add the mac address to the name
   # so you can use a single firmware for all devices
-  name_add_mac_suffix: false
+  name_add_mac_suffix: true
 
 
   # This will allow for (future) project identification,
   # configuration and updates.
   project:
     name: "delqueso.sensor1"
-    version: "1.1.17"
+    version: "1.1.18"
 
 # Example configuration entry
 http_request:

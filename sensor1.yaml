@@ -10,7 +10,7 @@ esphome:
   # configuration and updates.
   project:
     name: "delqueso.sensor1"
-    version: "1.1.4"
+    version: "1.1.5"
 
 # Example configuration entry
 http_request:
@@ -51,7 +51,6 @@ wifi:
     password: '12345678'
 captive_portal:
 logger:
-    level: VERBOSE
 
 # Define GPIO outputs
 output:

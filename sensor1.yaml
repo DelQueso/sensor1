@@ -125,14 +125,3 @@ interval:
           flash_length: 500ms
       - light.turn_off:
           id: status_led_ok
-number:
-  - platform: template
-    name: "Door Open Alarm Siren Delay"
-    id: door_open_alarm_siren_delay
-    min_value: 10
-    max_value: 300
-    step: 1
-    initial_value: 120  # Default value
-    unit_of_measurement: "s"
-    optimistic: true  # Enables optimistic mode
-    restore_value: true

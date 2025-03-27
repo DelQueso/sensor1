@@ -135,3 +135,4 @@ number:
     initial_value: 120  # Default value
     unit_of_measurement: "s"
     optimistic: true  # Enables optimistic mode
+    restore_value: true

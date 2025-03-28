@@ -1,0 +1,88 @@
+template:
+  # Check if temperature is within range. When temperature is unavailable, this value is set to false. The sensor becomes true after some delay.
+  - binary_sensor:
+    - name: sensor1_template_temperature_outside_threshold_flag
+      delay_on: >
+       {% set delayOn = states('input_number.sensor1_template_temperature_alert_delay') | int(0) %}
+         {{delayOn}}
+      state: >
+        {% set current_temp = states('sensor.sensor1_template_temperature') %}
+        {% set low_temp_th = states('input_number.sensor1_template_low_temperature_threshold') | float(0) %}
+        {% set high_temp_th = states('input_number.sensor1_template_high_temperature_threshold') | float(0) %}
+        {% if current_temp in ['unavailable', 'unknown', 'none'] %}
+          False
+        {% else %}
+          {% set current_temp = current_temp | float %}
+          {% if current_temp > low_temp_th and current_temp < high_temp_th %}
+            False
+          {% else %}
+            True
+          {% endif %}
+        {% endif %}
+  - sensor:
+      - name: sensor1_template_last_update
+        unit_of_measurement: "s"
+        state: "{{ (as_timestamp(now()) - as_timestamp(states.sensor.sensor1_template_temperature.last_updated)) | float | round(0) }}"
+      - unique_id: sensor1_template_alarm
+        state: >
+          {% set current_temp = states('sensor.sensor1_template_temperature') %}
+          {% set last_update = states('sensor.sensor1_template_last_update') | float %}
+          {% set noResponse = last_update > 300 %}
+          {% if current_temp in ['unavailable', 'unknown', 'none'] and noResponse %}
+            Connection lost
+          {% else %}
+            {% set temperature_alarm = states('binary_sensor.sensor1_template_temperature_outside_threshold_flag') | bool %}
+            {% if noResponse %}
+              Connection lost
+            {% elif temperature_alarm %}
+              Temperature alert
+            {% else %}
+              Off
+            {% endif %}
+          {% endif %}
+        attributes:
+          friendly_name: "{{ states('input_text.sensor1_template_name') }}"
+          group:  "{{ states('input_text.sensor1_template_group') }}"
+          location: "{{ states('input_text.sensor1_template_location') }}"
+          low_temperature_threshold: "{{ states('input_number.sensor1_template_low_temperature_threshold') }}"
+          high_temperature_threshold: "{{ states('input_number.sensor1_template_high_temperature_threshold') }}"
+          temperature_alarm_notification_delay: "{{ states('input_number.sensor1_template_temperature_alarm_notification_delay') }}"
+
+input_number:
+  sensor1_template_low_temperature_threshold:
+    name: Low Temperature Threshold
+    mode: box
+    min: -100
+    max: 100
+    step: 1
+    unit_of_measurement: "°C"
+  sensor1_template_high_temperature_threshold:
+    name: High Temperature Threshold
+    mode: box
+    min: -100
+    max: 100
+    step: 1
+    unit_of_measurement: "°C"
+  sensor1_template_temperature_alarm_notification_delay:
+    name: Temperature Alarm Notification Delay
+    mode: box
+    min: 0
+    max: 3600
+    step: 1
+    unit_of_measurement: "s"
+input_text:
+  sensor1_template_name:
+  sensor1_template_group:
+  sensor1_template_location:
+
+automation:
+  - alias: sensor1_template Udpate Check
+    id: sensor1_template_udpate_check
+    trigger:
+      - platform: time_pattern
+        seconds: "/1"
+    action:
+      - service: homeassistant.update_entity
+        target:
+          entity_id: sensor.sensor1_template_last_update
+    mode: single
